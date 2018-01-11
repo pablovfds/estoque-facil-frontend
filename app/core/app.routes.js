@@ -1,8 +1,11 @@
 app.config(function ($routeProvider) {
     $routeProvider.when("/",{
-        templateUrl: "view/products-list.html",
-        controller: "ProductsListCtrl"
-    }).when("/create-product",{
+      templateUrl: "view/search-product.html",
+      controller: "SearchProductCtrl"
+    }).when("/products",{
+        templateUrl: "view/search-product.html",
+        controller: "SearchProductCtrl"
+    }).when("/products/create-product",{
         templateUrl: "view/create-product.html",
         controller: "CreateProductCtrl"
     }).otherwise({

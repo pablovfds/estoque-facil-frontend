@@ -1,6 +1,15 @@
-app.controller("SearchProductCtrl", function ($scope, $uibModal) {
+app.controller("SearchProductCtrl", function ($scope, $uibModal, $http) {
 
-  $scope.title = "SearchProductCtrl"
+  $scope.productsList = []
+
+  var loadProductsList = function () {
+    $http.get("http://localhost:8080/api/produto/")
+      .then(function successCallback(response) {
+            $scope.productsList = response.data;
+        }, function errorCallback(error) {
+            console.log(error);
+        });
+  }
 
   $scope.open = function() {
     $uibModal.open({
@@ -10,6 +19,8 @@ app.controller("SearchProductCtrl", function ($scope, $uibModal) {
       controller: 'CreateProductCtrl'
     });
   };
+
+  loadProductsList();
 });
 
 app.controller("CreateProductCtrl", function ($scope, $uibModalInstance, $http, toastr) {

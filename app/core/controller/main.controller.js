@@ -12,7 +12,9 @@ app.controller("SearchProductCtrl", function ($scope, $uibModal) {
   };
 });
 
-app.controller("CreateProductCtrl", function ($scope, $uibModalInstance) {
+app.controller("CreateProductCtrl", function ($scope, $uibModalInstance, $http, toastr) {
+
+  $scope.product = {}
 
   $scope.listaDeSituacoes = [
     {
@@ -25,10 +27,30 @@ app.controller("CreateProductCtrl", function ($scope, $uibModalInstance) {
   ]
 
   $scope.createProduct = function (product) {
-    console.log(product);
-  }
 
-  $scope.cancel = function () {
-    $uibModalInstance.dismiss('cancel');
-  };
-});
+    if (product.situacao !== null && product.situacao !== undefined &&
+      product.situacao.value !== null && product.situacao.value !== undefined) {
+        if (product.situacao.value === 1) {
+          product.situacao = 1
+        } else {
+          product.situacao = 1
+        }
+      }
+
+      $http.post("http://localhost:8080/api/produto/", JSON.stringify(product))
+        .then(function success(response) {
+          if (response.status === 201) {
+            toastr.success("Produto adicionado com sucesso!");
+            $scope.product = {}
+            $uibModalInstance.close();
+          }
+        }, function error(error) {
+          console.log(error);
+          toastr.error("Problemas ao tentar adicionar produto.");
+        });
+    }
+
+    $scope.cancel = function () {
+      $uibModalInstance.dismiss('cancel');
+    };
+  });

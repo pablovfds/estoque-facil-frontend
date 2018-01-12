@@ -1,6 +1,15 @@
-app.controller("SearchProductCtrl", function ($scope, $uibModal) {
+app.controller("SearchProductCtrl", function ($scope, $uibModal, $http, toastr) {
 
-  $scope.title = "SearchProductCtrl"
+  $scope.productsList = []
+
+  var loadProductsList = function () {
+    $http.get("http://localhost:8080/api/produto/")
+      .then(function successCallback(response) {
+            $scope.productsList = response.data;
+        }, function errorCallback(error) {
+            console.log(error);
+        });
+  }
 
   $scope.open = function() {
     $uibModal.open({
@@ -10,6 +19,24 @@ app.controller("SearchProductCtrl", function ($scope, $uibModal) {
       controller: 'CreateProductCtrl'
     });
   };
+
+  $scope.searchProductId = function(id) {
+    $http.get("http://localhost:8080/api/produto/" + id)
+      .then(function successCallback(response) {
+          $scope.productsList = [
+            response.data
+          ]
+        }, function errorCallback(error) {
+          console.error(error);
+            if (error.status === 404) {
+              toastr.error(error.data.errorMessage);
+            } else if (error.status === 400) {
+              toastr.error("Produto não encontrado");
+            }
+        });
+  }
+
+  loadProductsList();
 });
 
 app.controller("CreateProductCtrl", function ($scope, $uibModalInstance, $http, toastr) {

@@ -1,4 +1,4 @@
-app.controller("SearchProductCtrl", function ($scope, $uibModal, $http) {
+app.controller("SearchProductCtrl", function ($scope, $uibModal, $http, toastr) {
 
   $scope.productsList = []
 
@@ -19,6 +19,22 @@ app.controller("SearchProductCtrl", function ($scope, $uibModal, $http) {
       controller: 'CreateProductCtrl'
     });
   };
+
+  $scope.searchProductId = function(id) {
+    $http.get("http://localhost:8080/api/produto/" + id)
+      .then(function successCallback(response) {
+          $scope.productsList = [
+            response.data
+          ]
+        }, function errorCallback(error) {
+          console.error(error);
+            if (error.status === 404) {
+              toastr.error(error.data.errorMessage);
+            } else if (error.status === 400) {
+              toastr.error("Produto não encontrado");
+            }
+        });
+  }
 
   loadProductsList();
 });
